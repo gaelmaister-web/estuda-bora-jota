@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#142b25">
+<meta name="description" content="Simulados gamificados para estudar para UERJ e ENEM.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Missão Aprovação</title>
+<style>
+:root{--bg:#0d1714;--panel:#162720;--panel2:#20382e;--text:#f5f7f5;--muted:#b8c8bf;--gold:#f3c969;--green:#9be2b4;--line:#355144;--red:#ffb4a9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{padding:22px 18px 18px;background:linear-gradient(135deg,#17382c,#10231d);border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--green);font-weight:800}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{font-size:27px;margin:6px 0}p{line-height:1.45}.muted{color:var(--muted)}.pill{border:1px solid #5d745f;border-radius:999px;padding:8px 11px;color:var(--gold);font-size:13px;font-weight:700;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.stat{background:#244237;border-radius:13px;padding:12px 8px;text-align:center}.stat strong{display:block;font-size:21px;color:var(--gold)}.stat span{font-size:11px;color:#d5e4da}
+main{max-width:720px;margin:auto;padding:16px}.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:16px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:12px;padding:11px 14px;font-weight:700;white-space:nowrap}.tab.active{background:var(--gold);color:#1b251f;border-color:var(--gold)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:14px}.label{color:var(--green);font-size:12px;font-weight:800;letter-spacing:.08em}.question{font-size:18px;line-height:1.5;font-weight:700;margin:12px 0 16px}.answers{display:grid;gap:9px}.answer{width:100%;text-align:left;color:var(--text);background:#1d3228;border:1px solid #3b5a49;border-radius:13px;padding:13px;line-height:1.4;font-size:15px}.answer:active{transform:scale(.99)}.answer .letter{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:8px;background:#345443;color:var(--gold);font-weight:800;margin-right:9px}.answer.correct{border-color:var(--green);background:#1b4631}.answer.wrong{border-color:var(--red);background:#492b2a}.answer:disabled{opacity:1}
+.feedback{margin-top:14px;padding:14px;border-radius:13px;background:#20382e;border:1px solid var(--line);line-height:1.5}.feedback h3{margin:0 0 8px}.btn{border:0;border-radius:12px;padding:13px 16px;background:var(--gold);color:#1b251f;font-weight:800;font-size:15px;width:100%;margin-top:13px}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.progress{height:8px;border-radius:99px;background:#30453a;overflow:hidden}.progress>div{height:100%;background:var(--green);width:0}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.small{font-size:13px}.hide{display:none!important}.mission{display:flex;gap:12px;align-items:center}.missionIcon{font-size:25px;background:#2b4538;border-radius:12px;padding:12px}.listitem{padding:12px 0;border-bottom:1px solid var(--line)}.listitem:last-child{border:0}footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div><div class="eyebrow">SUA JORNADA COMEÇA AQUI</div><h1>Missão Aprovação</h1><div class="muted">UERJ + ENEM · estude no seu ritmo</div></div><div class="pill">🎖️ Nível <span id="level">1</span></div></div>
+  <div class="stats">
+    <div class="stat"><strong id="xp">0</strong><span>XP TOTAL</span></div>
+    <div class="stat"><strong id="streak">0</strong><span>QUESTÕES FEITAS</span></div>
+    <div class="stat"><strong id="accuracy">—</strong><span>APROVEITAMENTO</span></div>
+  </div>
+</header>
+<main>
+  <nav class="tabs">
+    <button class="tab active" data-page="study">⚔️ Simulado</button>
+    <button class="tab" data-page="progress">📈 Minha evolução</button>
+    <button class="tab" data-page="about">ℹ️ Sobre</button>
+  </nav>
+  <section id="study">
+    <div class="card">
+      <div class="row"><div><div class="label">MISSÃO DO DIA</div><strong>Complete 5 questões</strong></div><div class="pill">+20 XP por questão</div></div>
+      <div class="progress" style="margin-top:13px"><div id="missionBar"></div></div>
+      <p class="muted small" id="missionText">0 de 5 questões concluídas nesta sessão.</p>
+    </div>
+    <div class="row" style="margin:6px 2px 12px"><div class="label" id="counter">QUESTÃO 1</div><div class="muted small" id="source">AMOSTRA DIDÁTICA</div></div>
+    <div class="card" id="questionCard">
+      <div class="label" id="subject">MATEMÁTICA · ENEM</div>
+      <div class="question" id="prompt"></div>
+      <div class="answers" id="answers"></div>
+      <div id="feedback" class="feedback hide" aria-live="polite"></div>
+      <button class="btn hide" id="nextBtn">Próxima questão →</button>
+    </div>
+    <p class="muted small">As questões exibidas nesta versão inicial são exemplos didáticos originais, não questões oficiais da UERJ ou do ENEM.</p>
+  </section>
+  <section id="progress" class="hide">
+    <div class="card"><div class="label">SEU DESEMPENHO</div><h2>Você está construindo consistência.</h2><div class="progress"><div id="overallBar"></div></div><p id="progressSummary" class="muted">Responda questões para ver suas estatísticas.</p></div>
+    <div class="card"><div class="label">HISTÓRICO</div><div id="history" class="muted">Ainda não há respostas registradas.</div><button class="btn secondary" id="resetBtn">Zerar meu progresso neste aparelho</button></div>
+  </section>
+  <section id="about" class="hide">
+    <div class="card"><div class="label">SOBRE O PROJETO</div><h2>Questões + explicações prontas</h2><p>Esta versão demonstra o fluxo do aplicativo: responder, conferir o comentário, ganhar XP e acompanhar resultados. As explicações ficam incluídas nos dados do app; nenhuma chamada de IA é feita ao responder.</p><p>O banco completo dos últimos dez anos ainda precisa ser importado, conferido com os gabaritos oficiais e revisado. O uso de provas, enunciados e imagens deve respeitar as permissões aplicáveis.</p><p><strong>Instalação no iPhone:</strong> publique estes arquivos em um site HTTPS. Depois abra o site no Safari, toque em Compartilhar e escolha “Adicionar à Tela de Início”.</p></div>
+  </section>
+</main>
+<footer>Versão inicial · seu progresso fica salvo neste aparelho</footer>
+<script>
+const questions = [
+ {id:"demo1",exam:"AMOSTRA DIDÁTICA",subject:"MATEMÁTICA · ENEM (estilo)",prompt:"Uma biblioteca organizou 120 livros em caixas iguais, com 8 livros em cada caixa. Quantas caixas foram necessárias?",options:["12 caixas","15 caixas","16 caixas","18 caixas","20 caixas"],correct:1,explanation:"A quantidade de caixas é o total de livros dividido pela quantidade em cada caixa: 120 ÷ 8 = 15. Portanto, são necessárias 15 caixas.",distractors:["12 × 8 = 96, então esse número não acomoda os 120 livros.","Correta: 120 ÷ 8 = 15.","16 × 8 = 128, que ultrapassa o total de livros.","18 × 8 = 144, que ultrapassa o total de livros.","20 × 8 = 160, que ultrapassa o total de livros."]},
+ {id:"demo2",exam:"AMOSTRA DIDÁTICA",subject:"BIOLOGIA · ENEM (estilo)",prompt:"Em uma cadeia alimentar, as plantas são chamadas de produtores principalmente porque:",options:["decompõem restos de organismos","obtêm energia alimentando-se de animais","produzem matéria orgânica usando energia luminosa","não precisam de água para sobreviver","consomem exclusivamente outros produtores"],correct:2,explanation:"Plantas são produtores porque, em geral, realizam fotossíntese: convertem energia luminosa em energia química e produzem matéria orgânica a partir de substâncias inorgânicas.",distractors:["A decomposição é realizada principalmente por fungos e bactérias decompositoras.","Plantas não obtêm energia alimentando-se de animais.","Correta: a fotossíntese permite produzir matéria orgânica usando energia luminosa.","Plantas precisam de água, que participa de processos essenciais como a fotossíntese.","Produtores não se definem por consumir outros produtores; são a base autotrófica da cadeia."]},
+ {id:"demo3",exam:"AMOSTRA DIDÁTICA",subject:"PORTUGUÊS · INTERPRETAÇÃO",prompt:"Leia: “Embora estivesse cansada, Marina terminou a leitura.” A expressão “embora” introduz uma ideia de:",options:["causa","conclusão","concessão","finalidade","comparação"],correct:2,explanation:"“Embora” é uma conjunção subordinativa concessiva. Ela apresenta um fato que poderia ser obstáculo — estar cansada — mas que não impediu a ação principal.",distractors:["Causa indicaria o motivo da ação, como “porque estava cansada”.","Conclusão seria marcada por conectores como “portanto”.","Correta: “embora” expressa concessão, uma quebra de expectativa.","Finalidade indica objetivo, como “para que”.","Comparação estabelece uma relação comparativa, como “como”."]},
+ {id:"demo4",exam:"AMOSTRA DIDÁTICA",subject:"FÍSICA · ENEM (estilo)",prompt:"Um ciclista percorre 30 km em 2 horas, mantendo velocidade média constante. Qual é sua velocidade média?",options:["10 km/h","12 km/h","15 km/h","20 km/h","60 km/h"],correct:2,explanation:"Velocidade média é a distância dividida pelo tempo: v = 30 km ÷ 2 h = 15 km/h.",distractors:["10 km/h resultaria em apenas 20 km em 2 horas.","12 km/h resultaria em 24 km em 2 horas.","Correta: 30 ÷ 2 = 15 km/h.","20 km/h resultaria em 40 km em 2 horas.","60 é o produto 30 × 2, mas velocidade média exige divisão da distância pelo tempo."]},
+ {id:"demo5",exam:"AMOSTRA DIDÁTICA",subject:"HISTÓRIA · BRASIL",prompt:"Em uma democracia representativa, os cidadãos exercem uma forma importante de participação política ao:",options:["eliminar todas as instituições públicas","escolher representantes por meio de eleições","impedir a existência de opiniões divergentes","transferir permanentemente todos os direitos políticos","substituir leis por decisões individuais"],correct:1,explanation:"Na democracia representativa, cidadãos elegem pessoas para ocupar cargos e tomar decisões políticas dentro das regras constitucionais. A participação também pode ocorrer por outros meios previstos em lei.",distractors:["A democracia depende de instituições, não de sua eliminação.","Correta: eleições são um mecanismo central de escolha de representantes.","Pluralidade de opiniões é compatível com a democracia.","Direitos políticos não são transferidos permanentemente aos representantes.","A atuação do Estado é regida por normas jurídicas, não por decisões individuais sem limites."]}
+];
+let state = JSON.parse(localStorage.getItem("missaoAprovacao") || '{"xp":0,"answered":{},"history":[]}');
+let current = 0, chosen = null, revealed = false;
+const $ = id => document.getElementById(id);
+function save(){localStorage.setItem("missaoAprovacao",JSON.stringify(state));renderStats()}
+function renderStats(){
+ const entries=Object.values(state.answered), total=entries.length, correct=entries.filter(x=>x.correct).length;
+ $("xp").textContent=state.xp; $("level").textContent=Math.floor(state.xp/100)+1;
+ $("streak").textContent=total; $("accuracy").textContent=total?Math.round(correct/total*100)+"%":"—";
+ $("missionBar").style.width=Math.min(100,total%6/5*100)+"%"; $("missionText").textContent=(total%6)+" de 5 questões concluídas nesta sessão.";
+ $("overallBar").style.width=(total?Math.round(correct/total*100):0)+"%";
+ $("progressSummary").textContent=total?`${correct} acertos em ${total} questões · aproveitamento de ${Math.round(correct/total*100)}%.`:"Responda questões para ver suas estatísticas.";
+ $("history").innerHTML=state.history.length?state.history.slice().reverse().map(h=>`<div class="listitem"><strong>${h.subject}</strong><div class="muted small">${h.correct?"Acertou":"Errou"} · ${h.date}</div></div>`).join(""):"Ainda não há respostas registradas.";
+}
+function renderQuestion(){
+ const q=questions[current]; chosen=null; revealed=false;
+ $("counter").textContent=`QUESTÃO ${current+1} DE ${questions.length}`; $("source").textContent=q.exam; $("subject").textContent=q.subject; $("prompt").textContent=q.prompt;
+ $("answers").innerHTML="";
+ q.options.forEach((opt,i)=>{const b=document.createElement("button");b.className="answer";b.innerHTML=`<span class="letter">${"ABCDE"[i]}</span>${opt}`;b.onclick=()=>choose(i);$("answers").appendChild(b)});
+ $("feedback").classList.add("hide");$("nextBtn").classList.add("hide");renderStats();
+}
+function choose(i){
+ if(revealed)return; chosen=i; revealed=true;
+ const q=questions[current], ok=i===q.correct;
+ [...$("answers").children].forEach((b,j)=>{b.disabled=true;if(j===q.correct)b.classList.add("correct");if(j===i&&!ok)b.classList.add("wrong")});
+ if(!state.answered[q.id]){state.answered[q.id]={correct:ok,choice:i};state.xp+=ok?20:5;state.history.push({subject:q.subject,correct:ok,date:new Date().toLocaleDateString("pt-BR")});}
+ const f=$("feedback");f.classList.remove("hide");f.innerHTML=`<h3>${ok?"✅ Correto! +20 XP":"📚 Vamos aprender com o erro. +5 XP"}</h3><p><strong>Resposta correta: ${"ABCDE"[q.correct]}.</strong> ${q.explanation}</p><p><strong>Sobre a sua alternativa (${ "ABCDE"[i] }):</strong> ${i===q.correct?"Você identificou corretamente o conceito.":q.distractors[i]}</p><p class="small muted">Comentário didático pré-armazenado nesta versão de demonstração.</p>`;
+ $("nextBtn").classList.remove("hide");$("nextBtn").textContent=current===questions.length-1?"Recomeçar simulado ↻":"Próxima questão →";save();
+}
+$("nextBtn").onclick=()=>{current=(current+1)%questions.length;renderQuestion()};
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));["study","progress","about"].forEach(p=>$(p).classList.toggle("hide",p!==t.dataset.page));if(t.dataset.page==="progress")renderStats()});
+$("resetBtn").onclick=()=>{if(confirm("Tem certeza que deseja apagar o progresso salvo neste aparelho?")){state={xp:0,answered:{},history:[]};save();renderQuestion()}};
+if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(()=>{});
+renderQuestion();renderStats();
+</script>
+</body></html>
